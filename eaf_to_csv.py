@@ -1,13 +1,13 @@
 import csv 
-import pympi #this is a special package, use pip install pympi-ling to set up coding enviornment
-import tkinter as tk
+import pympi # this is a special package, use pip install pympi-ling to set up coding enviornment
+import tkinter as tk # this is usually already installed but it's a similar thing: if you don't have it, install w/ pip
 from tkinter import filedialog
-# run as python eafconv.py
+# run as python eaf_to_csv.py in terminal
 
 # this function takes an eaf file path and converts it to a list of rows
-# each tier becomes two columns one for start time and one for text
-# we assume tiers are aligned by annotation index
-# if a tier has fewer annotations than others we fill missing cells with blanks
+# each tier becomes two columns, one for start time and one for text (same as the tsv ELAN application gives you)
+# we assume tiers are aligned by annotation index (aka start time)
+# if a tier has fewer annotations than others we fill missing cells with blanks/null
 
 def eaf_to_csv(eaf_path):
     # load eaf file
@@ -15,7 +15,6 @@ def eaf_to_csv(eaf_path):
     
     # get tier names and remove default
     tiers = [t for t in eaf.tiers.keys() if t.lower() != "default"]
-
 
     # build data for each tier including start times and texts
     tier_data = {}
@@ -28,13 +27,13 @@ def eaf_to_csv(eaf_path):
         if len(anns) > max_len:
             max_len = len(anns)
 
-    # make headers each tier gets two columns
+    # make headers- each tier gets two columns
     headers = []
     for tier in tiers:
         headers.append(f"{tier}_start")
         headers.append(f"{tier}_text")
 
-    # build rows aligned by index (in this case start)
+    # build rows aligned by index (in this case start) -- SELF JOIN
     rows = []
     for i in range(max_len):
         row = {}
@@ -51,7 +50,6 @@ def eaf_to_csv(eaf_path):
     return headers, rows
 
 # this function saves rows to a csv file
-
 
 def save_csv(headers, rows):
     root = tk.Tk()
@@ -71,13 +69,13 @@ def save_csv(headers, rows):
         print("save cancelled")
 
 # driver
-
-
-
 if __name__ == "__main__":
-    eaf_path = input("copy paste path to your eaf file: ").strip() # prompt user to paste eaf file path
+    # prompt user to paste eaf file path, you can copy this from a shift+right click on pc, use CTRL+V
+    # since it comes in "" on pc and I'm lazy...
+    eaf_path = input("copy paste path to your eaf file: ").strip().strip('"').strip("'") 
     if eaf_path: # convert and save
         headers, rows = eaf_to_csv(eaf_path)
         save_csv(headers, rows)
     else:
         print("no file path entered")
+

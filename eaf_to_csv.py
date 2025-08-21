@@ -5,7 +5,6 @@ from tkinter import filedialog
 # run as python eaf_to_csv.py in terminal
 
 # this function takes an eaf file path and converts it to a list of rows
-# each tier becomes two columns, one for start time and one for text (same as the tsv ELAN application gives you)
 # we assume tiers are aligned by annotation index (aka start time)
 # if a tier has fewer annotations than others we fill missing cells with blanks/null
 
@@ -80,5 +79,6 @@ if __name__ == "__main__":
         save_csv(headers, rows)
     else:
         print("no file path entered")
+
 
 

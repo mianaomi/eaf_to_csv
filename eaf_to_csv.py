@@ -28,23 +28,26 @@ def eaf_to_csv(eaf_path):
             max_len = len(anns)
 
     # make headers- each tier gets two columns
-    headers = []
+    headers = ["start_time"]
     for tier in tiers:
-        headers.append(f"{tier}_start")
         headers.append(f"{tier}_text")
 
-    # build rows aligned by index (in this case start) -- SELF JOIN
+    # build rows aligned by index (in this case start) -- functionally SELF JOIN
     rows = []
     for i in range(max_len):
         row = {}
+        # take start from first tier
+        if i < len(tier_data[tiers[0]]):
+            row["start_time"] = tier_data[tiers[0]][i][0]
+        else:
+            row["start_time"] = ""
+            
         for tier in tiers:
             if i < len(tier_data[tier]):
-                start, text = tier_data[tier][i]
-                row[f"{tier}_start"] = start
-                row[f"{tier}_text"] = text
+                _, text = tier_data[tier][i]
+                row[f"{tier}"] = text
             else:
-                row[f"{tier}_start"] = ""
-                row[f"{tier}_text"] = ""
+                row[f"{tier}"] = ""
         rows.append(row)
 
     return headers, rows
@@ -71,11 +74,11 @@ def save_csv(headers, rows):
 # driver
 if __name__ == "__main__":
     # prompt user to paste eaf file path, you can copy this from a shift+right click on pc, use CTRL+V
-    # since it comes in "" on pc and I'm lazy...
-    eaf_path = input("copy paste path to your eaf file: ").strip().strip('"').strip("'") 
+    eaf_path = input("copy paste path to your eaf file, remove surround quotes: ").strip().strip('"').strip("'") 
     if eaf_path: # convert and save
         headers, rows = eaf_to_csv(eaf_path)
         save_csv(headers, rows)
     else:
         print("no file path entered")
+
 

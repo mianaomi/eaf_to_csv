@@ -29,7 +29,7 @@ def eaf_to_csv(eaf_path):
     # make headers- each tier gets two columns
     headers = ["start_time"]
     for tier in tiers:
-        headers.append(f"{tier}_text")
+        headers.append(f"{tier}")
 
     # build rows aligned by index (in this case start) -- functionally SELF JOIN
     rows = []
@@ -37,7 +37,14 @@ def eaf_to_csv(eaf_path):
         row = {}
         # take start from first tier
         if i < len(tier_data[tiers[0]]):
-            row["start_time"] = tier_data[tiers[0]][i][0]
+            ms = tier_data[tiers[0]][i][0] # the data right now is just a number of ms
+            # convert to timestring
+            total_seconds = ms // 1000
+            millis = ms % 1000
+            hrs = total_seconds // 3600
+            mins = (total_seconds % 3600) // 60
+            secs = total_seconds % 60
+            row["start_time"] = f"{hrs:02}:{mins:02}:{secs:02}.{millis:03}"
         else:
             row["start_time"] = ""
             
@@ -79,6 +86,7 @@ if __name__ == "__main__":
         save_csv(headers, rows)
     else:
         print("no file path entered")
+
 
 
 

@@ -10,6 +10,7 @@ Notices:
 - Any tier labeled default will be dropped by the code's logic
 - Python is a slow language, running will take some time
 - Tested in VSCode terminal on PC
+- AI-assisted, human designed
 
 Specs:
 - Required packages: pympi-ling and tkinter
